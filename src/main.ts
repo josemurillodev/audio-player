@@ -17,23 +17,38 @@ fileInput.addEventListener("change", (event) => {
     reader.onload = () => {
       const arrayBuffer = reader.result as ArrayBuffer;
       player.load(arrayBuffer);
+      toggleBtn.classList.remove('playing');
     };
     reader.onerror = () => console.error('Error reading file');
     reader.readAsArrayBuffer(file);
   }
 });
 
+const container = document.createElement("div");
+container.className  = 'audio-player'
+document.body.appendChild(container);
+
 const toggleBtn = document.createElement("button");
-toggleBtn.innerText = "Play / Pause";
-toggleBtn.style.marginBottom = "24px";
-document.body.appendChild(toggleBtn);
+toggleBtn.className  = 'play-button'
+container.appendChild(toggleBtn);
+
+const toggleIcon = document.createElement("span");
+toggleBtn.appendChild(toggleIcon);
+
+const timeLabel = document.createElement("span");
+timeLabel.className  = 'time'
+timeLabel.textContent = '0:00 / 0:00'
+container.appendChild(timeLabel);
 
 toggleBtn.addEventListener("click", () => {
+  if (!player) return;
   if (player.isPlaying) {
     player.pause();
+    toggleBtn.classList.remove('playing');
     return;
   }
   player.play();
+  toggleBtn.classList.add('playing');
 });
 
 const rangeInput = document.createElement("input");
@@ -43,7 +58,7 @@ rangeInput.min = "0";
 rangeInput.max = "0.999";
 rangeInput.step = "0.001";
 rangeInput.value = "0";
-document.body.appendChild(rangeInput);
+container.appendChild(rangeInput);
 
 rangeInput.addEventListener("input", (event: Event) => {
   const target = event.target as HTMLInputElement;
@@ -51,9 +66,8 @@ rangeInput.addEventListener("input", (event: Event) => {
 });
 
 const draw = () => {
-  if (!player.duration) {
-    return;
-  }
+  if (!player.duration) return;
+  timeLabel.textContent = `${AudioPlayer.formatTime(player.elapsed)} / ${AudioPlayer.formatTime(player.duration)}`
   const normalized = player.elapsed / player.duration;
   rangeInput.value = normalized.toString();
 };

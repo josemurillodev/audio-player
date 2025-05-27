@@ -6,6 +6,14 @@ export default class AudioPlayer {
   private time = 0;
   private offset = 0;
 
+  static formatTime(seconds: number) {
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+
+    const paddedSecs = String(secs).padStart(2, '0');
+    return `${mins}:${paddedSecs}`;
+  }
+
   constructor(context: AudioContext) {
     this.context = context;
   }

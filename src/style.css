@@ -22,3 +22,132 @@ body {
   justify-content: center;
   flex-direction: column;
 }
+
+.audio-player {
+  display: flex;
+  width: 80%;
+  background-color: #E6E6E6;
+  color: #000;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* https://codepen.io/jacobcs1996/pen/geQKLJ?editors=0100 */
+
+.play-button {
+  --button-height: 6px;
+  --button-color: #000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 52px;
+  height: 52px;
+  background-color: #E6E6E6;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+
+}
+
+.play-button span {
+  margin-left: calc(2 * 0.14 * var(--button-height));
+  background: none;
+  border: none;
+  border-top: var(--button-height) solid transparent;
+  border-bottom: var(--button-height) solid transparent;
+  border-left: calc(var(--button-height) * 2 * 0.86) solid var(--button-color);
+
+}
+
+.play-button.playing span {
+  margin-left: 0;
+
+  position: relative;
+  background: none;
+  border: none;
+  height: calc(var(--button-height) * 2);
+  width: calc(var(--button-height) * 2 * 0.86);
+
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 33%;
+    background: var(--button-color);
+  }
+
+  &:before {
+    left: 0;
+  }
+
+  &:after {
+    right: 0;
+  }
+}
+
+input[type="range"] {
+  /* active color */
+  --c: #595959;
+  /* line thickness*/
+  --l: 4px;
+  /* thumb height */
+  --h: 52px;
+  /* thumb width */
+  --w: 1px;
+  flex: 1;
+  height: var(--h);
+  margin-right: 26px;
+  margin-left: 14px;
+  /* needed for Firefox*/
+  --_c: color-mix(in srgb, var(--c), #000 var(--p, 0%));
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+input[type="range"]:focus-visible,
+input[type="range"]:hover {
+  --p: 10%;
+}
+
+/* chromium */
+input[type="range" i]::-webkit-slider-thumb {
+  height: var(--h);
+  width: var(--w);
+  background: var(--_c);
+  background: transparent;
+  border-image: linear-gradient(90deg, var(--_c) 50%, #d9d9d9 0) 0 1/calc(50% - var(--l)/2) 100vw/0 100vw;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: .3s;
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+  height: var(--h);
+  width: var(--w);
+  background: var(--_c);
+  border-image: linear-gradient(90deg, var(--_c) 50%, #d9d9d9 0) 0 1/calc(50% - var(--l)/2) 100vw/0 100vw;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: .3s;
+}
+
+@supports not (color: color-mix(in srgb, red, red)) {
+  input[type="range"] {
+    --_c: var(--c);
+  }
+}
+
+.time {
+  /* margin-left: 2px; */
+  font-family: 'Roboto';
+  font-size: 14px;
+}
