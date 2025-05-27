@@ -32,7 +32,7 @@ body {
   align-items: center;
 }
 
-/* https://codepen.io/jacobcs1996/pen/geQKLJ?editors=0100 */
+/* https://codepen.io/jacobcs1996/pen/geQKLJ */
 
 .play-button {
   --button-height: 6px;
@@ -88,6 +88,8 @@ body {
     right: 0;
   }
 }
+
+/* https://codepen.io/t_afif/pen/zYmjbZz */
 
 input[type="range"] {
   /* active color */

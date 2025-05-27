@@ -1,5 +1,6 @@
 import AudioPlayer from './audio-player';
 import './style.css';
+import { throttle } from './throttle';
 
 const audioCtx = new AudioContext();
 const player = new AudioPlayer(audioCtx);
@@ -41,7 +42,7 @@ timeLabel.textContent = '0:00 / 0:00'
 container.appendChild(timeLabel);
 
 toggleBtn.addEventListener("click", () => {
-  if (!player) return;
+  if (!player.duration) return;
   if (player.isPlaying) {
     player.pause();
     toggleBtn.classList.remove('playing');
@@ -60,9 +61,14 @@ rangeInput.step = "0.001";
 rangeInput.value = "0";
 container.appendChild(rangeInput);
 
-rangeInput.addEventListener("input", (event: Event) => {
+const onSeek = (event: Event) => {
   const target = event.target as HTMLInputElement;
   player.seek(parseFloat(target.value) * player.duration);
+};
+const throttledOnSeek = throttle(onSeek, 50);
+
+rangeInput.addEventListener("input", (event: Event) => {
+  throttledOnSeek(event);
 });
 
 const draw = () => {
