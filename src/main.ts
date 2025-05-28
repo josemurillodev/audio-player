@@ -1,6 +1,5 @@
 import AudioPlayer from './audio-player';
 import './style.css';
-import { throttle } from './throttle';
 
 const audioCtx = new AudioContext();
 const player = new AudioPlayer(audioCtx);
@@ -61,19 +60,26 @@ rangeInput.step = "0.001";
 rangeInput.value = "0";
 container.appendChild(rangeInput);
 
-const onSeek = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  player.seek(parseFloat(target.value) * player.duration);
-};
-const throttledOnSeek = throttle(onSeek, 50);
+let seekTimeout: ReturnType<typeof setTimeout> | null = null;
 
 rangeInput.addEventListener("input", (event: Event) => {
-  throttledOnSeek(event);
+  if (seekTimeout !== null) {
+    clearTimeout(seekTimeout);
+  }
+  const target = event.target as HTMLInputElement;
+  const seekTo = parseFloat(target.value) * player.duration;
+  seekTimeout = setTimeout(() => {
+    player.seek(seekTo);
+    seekTimeout = null;
+  }, 100);
 });
 
 const draw = () => {
   if (!player.duration) return;
-  timeLabel.textContent = `${AudioPlayer.formatTime(player.elapsed)} / ${AudioPlayer.formatTime(player.duration)}`
+  if (seekTimeout !== null) return;
+  const elapsedString = AudioPlayer.formatTime(player.elapsed);
+  const durationString = AudioPlayer.formatTime(player.duration);
+  timeLabel.textContent = `${elapsedString} / ${durationString}`
   const normalized = player.elapsed / player.duration;
   rangeInput.value = normalized.toString();
 };
