@@ -1,4 +1,5 @@
 import AudioPlayer from './audio-player';
+import { extractId3Info, imageURL, readID3 } from './helper-id3';
 import './style.css';
 
 const audioCtx = new AudioContext();
@@ -10,12 +11,25 @@ fileInput.accept = "audio/*";
 fileInput.style.marginBottom = "24px";
 document.body.appendChild(fileInput);
 
+const image = document.createElement("img");
+image.className  = 'image'
+image.style.width = "200px";
+image.style.height = "200px";
+image.style.objectFit = "cover";
+document.body.appendChild(image);
+
 fileInput.addEventListener("change", (event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = () => {
       const arrayBuffer = reader.result as ArrayBuffer;
+      const bufferCopy = arrayBuffer.slice(0);
+      const img = extractId3Info(readID3(bufferCopy));
+      console.log('cover', img);
+      image.src = imageURL(img.cover.data, img.cover.format);
+      // image.style.backgroundImage = `url(${cover})`;
+      // image.style.backgroundSize = "cover";
       player.load(arrayBuffer);
       toggleBtn.classList.remove('playing');
     };
