@@ -39,10 +39,6 @@ const getAPIC = (a: DataView, id: number, x: number, size: number) => {
 
     let offset = id + x + 1;
 
-    console.log("offset:", offset);
-    console.log("expected end:", id + size);
-    console.log("image data length:", id + size - offset);
-
     // 1. Read MIME type (ASCII, null-terminated)
     let mimeEnd = offset;
     while (a.getUint8(mimeEnd) !== 0) mimeEnd++;
@@ -141,7 +137,6 @@ export const readID3 = (buffer: ArrayBuffer) => {
   let hasApic = false;
   for (; true; ) {
     frameChar = dataView.getString(id3FrameSize);
-    // frameSize = dataView.getInt(id3FrameSize + 4);
 
     const isV24 = versionMinor === 4;
     frameSize = isV24
@@ -157,7 +152,6 @@ export const readID3 = (buffer: ArrayBuffer) => {
       break;
     }
     frameName = dataView.getString(id3FrameSize, 4);
-    // console.log('frameName', frameName);
 
     if (frameName !== 'APIC' || (frameName === 'APIC' && !hasApic)) {
       hasApic = frameName === 'APIC';
